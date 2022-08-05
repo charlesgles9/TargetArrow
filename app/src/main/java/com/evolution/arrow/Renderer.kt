@@ -22,6 +22,8 @@ class Renderer(private val context: Context,private val width:Float,private val 
     private val walls= mutableListOf<RectF>()
     private val population=250
     private var best:Soldier?=null
+    private var selectBest=true
+    private var timer=Timer(5000L)
     override fun prepare() {
         batch.initShader(context)
         camera.setOrtho(width, height)
@@ -31,8 +33,21 @@ class Renderer(private val context: Context,private val width:Float,private val 
         walls.add(RectF(width*0.5f,height-20f,width,40f))
         walls.add(RectF(width,height*0.5f,30f,height))
         walls.add(RectF(250f,height*0.5f,30f,height))
+        timer.setCallback(object:Timer.Update{
+            override fun tick() {
+              selectBest=true
+            }
+        })
+
     }
 
+
+    private fun resetBest(){
+        if(soldiers.isNotEmpty()) {
+            best = soldiers[soldiers.size - 1]
+            best?.network?.start?.set(10f, height * 0.5f)
+        }
+    }
 
     override fun draw() {
        GLES32.glClear(GLES32.GL_COLOR_BUFFER_BIT or GLES32.GL_DEPTH_BUFFER_BIT)
@@ -58,9 +73,11 @@ class Renderer(private val context: Context,private val width:Float,private val 
         for( c in 0 until cycle){
 
             soldiers.sortBy { it.score }
-            if(soldiers.isNotEmpty())
-            best=soldiers[soldiers.size-1]
-            best?.network?.start?.set(10f,height*0.5f)
+
+            if(selectBest){
+                resetBest()
+                selectBest=false
+            }
             for(soldier in soldiers){
                 if(!soldier.active&&!inactive.contains(soldier))
                     inactive.add(soldier)
@@ -105,13 +122,14 @@ class Renderer(private val context: Context,private val width:Float,private val 
 
     override fun update(delta: Long) {
         evolution(delta)
-
+       timer.update(delta)
     }
 
     override fun onRelease() {
         super.onRelease()
         batch.cleanUp()
         TextureLoader.getInstance().clearTextures()
+
     }
 
 

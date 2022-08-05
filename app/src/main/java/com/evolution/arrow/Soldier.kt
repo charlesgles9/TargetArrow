@@ -15,7 +15,7 @@ class Soldier(x:Float,y:Float, width:Float,height:Float,val srcW:Float,val srcH:
     private val ray=Line(x,y,width,y)
     private val arrows= MutableList(1,init = {Arrow()})
     // outputs-> angle, shoot
-     val network=NeuralNetwork(4,6,2)
+     val network=NeuralNetwork(3,8,1)
     private val axis=AxisABB()
     var score=0f
     var active=true
@@ -59,9 +59,9 @@ class Soldier(x:Float,y:Float, width:Float,height:Float,val srcW:Float,val srcH:
 
     private fun moveRay(direction:Int){
         rayDir = if(direction==0){
-            -0.5f
+            -1f
         }else
-            0.5f
+            1f
 
     }
 
@@ -117,24 +117,19 @@ class Soldier(x:Float,y:Float, width:Float,height:Float,val srcW:Float,val srcH:
         val a2=(getRotationZ()+90f).toDouble()
         val a3=(a1-a2)
 
-       val output= network.predict(mutableListOf(a3,a1,a2,d))
+       val output= network.predict(mutableListOf(a3,a1,a2))
+
 
 
        //pick highest priority
-        var index=0
-        for(i in 0 until output.size){
-            if(output[index]<=output[i]){
-                index=i
-            }
-        }
-
-        when (index) {
+        when (if(output[0]>=0.5) 1 else 0) {
             0 -> {
               moveRay(0)
             }
             1 -> {
               moveRay(1)
             }
+
         }
 
         activateArrow()
