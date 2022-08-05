@@ -26,8 +26,8 @@ class Soldier(x:Float,y:Float, width:Float,height:Float,val srcW:Float,val srcH:
 
     }
     fun draw(batch: Batch){
-         batch.draw(ray)
-         ray.setColor(ColorRGBA.red)
+         //batch.draw(ray)
+        // ray.setColor(ColorsRGBA.red)
          batch.draw(this)
         arrows.forEach { arrow->batch.draw(arrow) }
     }

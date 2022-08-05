@@ -23,7 +23,7 @@ class Renderer(private val context: Context,private val width:Float,private val 
     private val population=250
     private var best:Soldier?=null
     private var selectBest=true
-    private var timer=Timer(5000L)
+    private var timer=Timer(10000L)
     override fun prepare() {
         batch.initShader(context)
         camera.setOrtho(width, height)
