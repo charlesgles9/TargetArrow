@@ -114,6 +114,7 @@ class Renderer(private val context: Context,private val width:Float,private val 
             soldiers.forEach {
                 it.update(delta)
             }
+
             bullsEye.update(delta)
         }
 
